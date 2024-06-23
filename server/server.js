@@ -17,6 +17,10 @@ app.use("/", (req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.json("Success");
+});
+
 app.get("/api/books", async (req, res) => {
   try {
     const category = req.query.category;
@@ -36,8 +40,17 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.json("Success");
+app.get("/api/books/:slug", async (req, res) => {
+  try {
+    const slugParam = req.params.slug;
+    const data = await Book.findOne({ slug: slugParam });
+
+    res.json(data);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occured while fetching the books." });
+  }
 });
 
 app.get("*", (req, res) => {
