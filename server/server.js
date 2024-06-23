@@ -19,7 +19,15 @@ app.use("/", (req, res, next) => {
 
 app.get("/api/books", async (req, res) => {
   try {
-    const data = await Book.find({});
+    const category = req.query.category;
+
+    const filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+
+    const data = await Book.find(filter);
     res.json(data);
   } catch (err) {
     res

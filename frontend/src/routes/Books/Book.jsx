@@ -6,11 +6,15 @@ function Book() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(baseUrl);
+        let url = baseUrl;
+        url += `?category=${selectedCategory}`;
+
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error("Failed to fetch data.");
@@ -26,7 +30,7 @@ function Book() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedCategory]);
 
   return (
     <div>
@@ -38,6 +42,19 @@ function Book() {
 
       <h1>Api Fetching</h1>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+      <div className="filters">
+        <label>Categories</label>
+        <select onChange={(e) => setSelectedCategory(e.target.value)}>
+          <option value="">All</option>
+          <option value="romance">Romance</option>
+          <option value="science">Science</option>
+          <option value="crime">Crime</option>
+          <option value="food">Food</option>
+          <option value="adventure">Adventure</option>
+          <option value="thriller">Thriller</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
 
       {loading ? (
         <p>loading...</p>
