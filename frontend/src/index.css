@@ -164,3 +164,11 @@ ul.books h3 {
   color: white;
   padding: 5px 10px;
 }
+
+.add-book:active {
+  background-color: #00000054;
+}
+
+.add-book:hover {
+  cursor: pointer;
+}

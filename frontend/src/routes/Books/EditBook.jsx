@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import NoImageSelected from "../../assets/no-image-selected.jpg";
 
-function CreateBook() {
+function EditBook() {
+  const navigate = useNavigate();
+  const urlSlug = useParams();
+  const baseURL = `http://localhost:8000/api/books/${urlSlug.slug}`;
+
+  const [bookId, setBookId] = useState("");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [stars, setStars] = useState(0);
@@ -11,35 +17,52 @@ function CreateBook() {
   const [submitted, setSubmitted] = useState(false);
   const [image, setImage] = useState(NoImageSelected);
 
-  const createBook = async (e) => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch(baseURL);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data.");
+      }
+
+      const data = await response.json();
+      setBookId(data._id);
+      setTitle(data.title);
+      setSlug(data.slug);
+      setStars(data.stars);
+      setDescription(data.description);
+      setCategories(data.category);
+      setThumbnail(data.thumbnail);
+    } catch (error) {
+      console.log("Error occured while fetching data");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const updateBook = async (e) => {
     e.preventDefault(); // prevent refreshing page on submit
     console.table([title, slug]);
 
     const formData = new FormData();
+    formData.append("bookId", bookId);
     formData.append("title", title);
     formData.append("slug", slug);
     formData.append("stars", stars);
     formData.append("description", description);
     formData.append("category", categories);
-    formData.append("thumbnail", thumbnail);
+
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);
+    }
 
     try {
       const response = await fetch("http://localhost:8000/api/books", {
-        method: "POST",
+        method: "PUT",
         body: formData,
       });
-
-      //   const response = await fetch("http://localhost:8000/api/books", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       title: title,
-      //       slug: slug,
-      //       stars: stars,
-      //       description: description,
-      //       category: categories,
-      //     }),
-      //   });
 
       if (response.ok) {
         setTitle("");
@@ -72,20 +95,52 @@ function CreateBook() {
     setCategories(e.target.value.split(",").map((category) => category.trim()));
   };
 
+  const removeBook = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/books/" + bookId,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        navigate("/books");
+        console.log("Book Deleted Successfully");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
-      <h1>Create Book</h1>
+      <h1>Edit Book</h1>
       <p>
         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nemo, quia.
       </p>
 
+      <button onClick={removeBook} className="delete">
+        Delete Book
+      </button>
+
       {submitted ? (
         <p>Data Submitted Successfully!</p>
       ) : (
-        <form className="bookdetails" onSubmit={createBook}>
+        <form className="bookdetails" onSubmit={updateBook}>
           <div className="col-1">
             <label>Upload Thumbnail</label>
-            <img src={image} alt="preview-image" />
+
+            {image ? (
+              <img src={`${image}`} alt="preview-image" />
+            ) : (
+              <img
+                src={`http://localhost:8000/uploads/${thumbnail}`}
+                alt="preview-image"
+              />
+            )}
             <input
               onChange={onImageChange}
               type="file"
@@ -145,4 +200,4 @@ function CreateBook() {
   );
 }
 
-export default CreateBook;
+export default EditBook;
