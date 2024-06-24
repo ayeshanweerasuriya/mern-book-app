@@ -40,6 +40,28 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
+app.post("/api/books", async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const newBook = new Book({
+      title: req.body.title,
+      slug: req.body.slug,
+      stars: req.body.stars,
+      description: req.body.description,
+      category: req.body.category,
+      // thumbnail: req.file.thumbnail,
+    });
+
+    await Book.create(newBook);
+    res.json("Data Submitted");
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occured while fetching the books." });
+  }
+});
+
 app.get("/api/books/:slug", async (req, res) => {
   try {
     const slugParam = req.params.slug;

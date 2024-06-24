@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./routes/Home/Home";
 import About from "./routes/About/About";
+import Book from "./routes/Books/Book";
+import SingleBook from "./routes/Books/SingleBook";
+import CreateBook from "./routes/Books/CreateBook";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Book from "./routes/Books/Book";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/books" element={<Book />} />
+          <Route path="/books/:slug" element={<SingleBook />} />
+          <Route path="/createbook" element={<CreateBook />} />
         </Routes>
         <Footer />
       </Router>

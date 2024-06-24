@@ -40,6 +40,8 @@ function Book() {
         assumenda.
       </p>
 
+      <Link to="/createbook">+ Add New Book</Link>
+
       <h1>Api Fetching</h1>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="filters">

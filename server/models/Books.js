@@ -8,23 +8,23 @@ const BookSchema = new Schema({
   },
   slug: {
     type: String,
-    required: true,
+    // required: true,
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
   },
   thumbnail: {
     type: String,
-    required: true,
+    // required: true,
   },
-  star: {
+  stars: {
     type: Number,
-    required: true,
+    // required: true,
   },
   category: {
     type: Array,
-    required: true,
+    // required: true,
   },
 
   createdAt: {
